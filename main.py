@@ -41,7 +41,7 @@ def main():
 
 	try:
 		f = open(dictionary, "r")
-		passwords = f.read().split()
+		passwords = re.split("[\r\n]+", f.read())
 		f.close()
 	except:
 		print("[-] Failed to read '%s' file." % (dictionary))
