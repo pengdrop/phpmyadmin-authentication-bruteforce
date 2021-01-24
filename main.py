@@ -39,23 +39,17 @@ def main():
 		parser.print_help()
 		return
 
-	try:
-		f = open(dictionary, "r")
-		passwords = re.split("[\r\n]+", f.read())
-		f.close()
-	except:
-		print("[-] Failed to read '%s' file." % (dictionary))
-		return
+	with open(dictionary) as fileobject:
+		for line in fileobject:
+			password = line
+			if login(url, username, password):
+				print("[*] FOUND - %s / %s" % (username, password))
 
-	for password in passwords:
-		if login(url, username, password):
-			print("[*] FOUND - %s / %s" % (username, password))
-
-			f = open("found.txt", "w")
-			f.write("%s / %s\n" % (username, password))
-			f.close()
-		else:
-			print("[!] FAILED - %s / %s" % (username, password))
-
+				f = open("found.txt", "w")
+				f.write("%s / %s\n" % (username, password))
+				f.close()
+			else:
+				print("[!] FAILED - %s / %s" % (username, password))
+				
 if __name__ == '__main__':
 	main()
