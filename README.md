@@ -9,3 +9,7 @@ Usage:
 ```
 python3 main.py -url http://example.com/pma/ -user root -dict password.txt
 ```
+OR
+```
+python3 main.py -url http://example.com/pma/ -udict users.txt -dict password.txt
+```
