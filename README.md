@@ -2,7 +2,7 @@
 
 tested on `phpMyAdmin 5.1.1`
 
-multithreaded bruteforce attack on phpMyAdmin authentication
+multithreaded bruteforce attack on phpMyAdmin authentication now with support for the https-specific cookie name
 
 ```
 usage: main.py [-h] [-url URL] [-user USER] [-dict DICT] [-threads THREADS]

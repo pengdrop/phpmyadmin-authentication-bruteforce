@@ -33,7 +33,7 @@ def login(url, username, password):
 			}
 			res = requests.post(url, cookies=cookies, data=data)
 			cookies = dict(res.cookies)
-			return 'pmaAuth-1' in cookies
+			return 'pmaAuth-1' in cookies or 'pmaAuth-1_https' in cookies
 		except:
 			pass
 	return False
