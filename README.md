@@ -1,11 +1,18 @@
 # phpMyAdmin Authentication Bruteforce
 
-tested on `phpMyAdmin 4.9.0.1`
+tested on `phpMyAdmin 5.1.1`
 
-`password.txt` file's source is: <https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt>
+multithreaded bruteforce attack on phpMyAdmin authentication now with support for the https-specific cookie name
 
-
-Usage:
 ```
-python3 main.py -url http://example.com/pma/ -user root -dict password.txt
+usage: main.py [-h] [-url URL] [-user USER] [-dict DICT] [-threads THREADS]
+
+e.g. python3 main.py -url http://example.com/pma/ -user root -dict password.txt -threads 2
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -url URL          The URL of target website
+  -user USER        The username of MySQL (default: root)
+  -dict DICT        The file path of password dictionary (default: password.txt)
+  -threads THREADS  How many threads to use (default: 1)
 ```
