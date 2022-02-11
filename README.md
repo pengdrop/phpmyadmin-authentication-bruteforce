@@ -7,5 +7,9 @@ tested on `phpMyAdmin 4.9.0.1`
 
 Usage:
 ```
-python3 main.py -url http://example.com/pma/ -user root -dict password.txt
+python3 main.py -url http://example.com/pma/ -user root -pdict password.txt
+```
+OR
+```
+python3 main.py -url http://example.com/pma/ -udict users.txt -pdict password.txt
 ```
